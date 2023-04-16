@@ -8,28 +8,38 @@ from tensorflow.keras.applications.resnet50 import ResNet50,preprocess_input
 from sklearn.neighbors import NearestNeighbors
 import cv2
 
-feature_list = np.array(pickle.load(open('embeddings.pkl','rb')))
-filenames = pickle.load(open('filenames.pkl','rb'))
+feature_list=np.array(pickle.load(open('embeddings.pkl','rb')))
+filenames=pickle.load(open('filenames.pkl','rb'))
 
-model = ResNet50(weights='imagenet',include_top=False,input_shape=(224,224,3))
-model.trainable = False
+model=ResNet50(weights='imagenet',include_top=False,input_shape=(224,224,3))
+model.trainable=False
 
-model = tensorflow.keras.Sequential([
+model=tensorflow.keras.Sequential([
     model,
-    GlobalMaxPooling2D()
+    GlobalMaxPooling2D()#addition of layer
 ])
 
-img = image.load_img('sample/shirt.jpg',target_size=(224,224))
+img = image.load_img('sample/1636.jpg',target_size=(224,224))
+    #converting image to array
+    
+    
 img_array = image.img_to_array(img)
+    
+    #by expanding 2d array is converted to 4 d array
 expanded_img_array = np.expand_dims(img_array, axis=0)
 preprocessed_img = preprocess_input(expanded_img_array)
 result = model.predict(preprocessed_img).flatten()
+    
+      #normalising data
 normalized_result = result / norm(result)
 
-neighbors = NearestNeighbors(n_neighbors=6,algorithm='brute',metric='euclidean')
+
+
+neighbors=NearestNeighbors(n_neighbors=6,algorithm='brute',metric='euclidean')
+
 neighbors.fit(feature_list)
 
-distances,indices = neighbors.kneighbors([normalized_result])
+distances,indices=neighbors.kneighbors([normalized_result])
 
 print(indices)
 
