@@ -1,2 +1,3 @@
 # fashion-recommender
-fashion recommender with chatbot
+recommends clothing based on your pic
+
